@@ -25,8 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         
-      - name: Install GCC
+      - name: Setup GCC
         uses: egor-tensin/setup-gcc@v1
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.5
+
         
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
