@@ -31,7 +31,9 @@ jobs:
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.5
 
-        
+      - name: Install Extra Packages
+        uses: apt-get install pkg-config build-essential mesa-common-dev libglu1-mesa-dev
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
         
