@@ -1,0 +1,18 @@
+{
+  "name": "nodegui-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Atul R <atulanand94@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "debug": "qode index.js"
+  },
+  "dependencies": {
+    "@nodegui/nodegui": "^0.25.0",
+    "elgato-light-api": "^1.0.4"
+  },
+  "devDependencies": {
+    "@nodegui/packer": "^1.4.1"
+  }
+}
