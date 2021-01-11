@@ -30,6 +30,9 @@ jobs:
         
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
-
+        
+      - name: Install Node Packages
+        run: yarn install
+        
       - name: Build Binary
         run: npx nodegui-packer --pack dist
