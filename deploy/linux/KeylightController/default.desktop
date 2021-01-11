@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Keylight Controller
+Exec=AppRun %F
+Icon=default
+Comment=Elgato Keylight Desktop Application
+Terminal=true
+Categories=Utility;

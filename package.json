@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "debug": "qode index.js"
+    "debug": "qode dist/index.js"
   },
   "dependencies": {
     "@nodegui/nodegui": "^0.25.0",

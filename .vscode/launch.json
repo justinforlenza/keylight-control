@@ -10,7 +10,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/qode.exe"
       },
-      "args": ["./index.js"],
+      "args": ["./dist/index.js"],
       "outputCapture": "std",
     }
   ]

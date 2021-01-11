@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build Binaries
 
 # Controls when the action will run. 
 on:
@@ -27,9 +27,6 @@ jobs:
         
       - name: Install GCC
         uses: egor-tensin/setup-gcc@v1
-        
-      - name: Install CMake
-        uses: Symbitic/install-cmake@v0.1.0
         
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
