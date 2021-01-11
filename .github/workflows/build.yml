@@ -6,12 +6,8 @@ name: Build Binaries
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    tags: 
+      - 'v*'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -31,7 +27,7 @@ jobs:
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.5
 
-      - name: Install Extra Packages
+      - name: Install Build Packages
         run: sudo apt-get install pkg-config build-essential mesa-common-dev libglu1-mesa-dev
 
       - name: Setup Node.js environment
