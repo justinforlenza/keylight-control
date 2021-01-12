@@ -11,8 +11,7 @@
     "@nodegui/nodegui": "^0.25.0",
     "axios": "^0.21.1",
     "bonjour": "^3.5.0",
-    "lodash": "^4.17.20",
-    "resolve": "^1.19.0"
+    "lodash": "^4.17.20"
   },
   "devDependencies": {
     "@nodegui/packer": "^1.4.1"

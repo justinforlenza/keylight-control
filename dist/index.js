@@ -1,4 +1,4 @@
-const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType } = require("@nodegui/nodegui");
+const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason } = require("@nodegui/nodegui");
 const bonjour = require('bonjour')()
 const resolve = require('path').resolve
 
@@ -35,14 +35,24 @@ function createHeaderWidget() {
 }
 
 function createTrayIcon() {
+  `
+  Create and Configure  System Tray Icon
+  `
   const icon = new QIcon(resolve(__dirname, 'bulb.png'))
   const tray = new QSystemTrayIcon()
   const menu = new QMenu()
 
   tray.setIcon(icon)
 
-  tray.addEventListener('activated', () => {
-    global.win.show()
+  tray.addEventListener('activated', (activationReason) => {
+    `
+    If tray icon is double clicked open the application
+    `
+    if (process.platform === 'linux') {
+      global.win.show()
+    } else if (activationReason === QSystemTrayIconActivationReason.DoubleClick) {
+      global.win.show()
+    }
   })
 
   tray.setContextMenu(menu)
