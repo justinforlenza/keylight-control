@@ -1,10 +1,9 @@
 {
-  "name": "nodegui-starter",
-  "version": "0.1.0",
-  "main": "index.js",
-  "author": "Atul R <atulanand94@gmail.com>",
-  "license": "MIT",
-  "private": true,
+  "name": "keylight-control",
+  "version": "0.1.1",
+  "main": "dist/index.js",
+  "author": "Justin Forlenza",
+  "license": "GPLv3",
   "scripts": {
     "debug": "qode dist/index.js"
   },
