@@ -1,5 +1,6 @@
-const { QMainWindow, QWidget, QLabel, FlexLayout } = require("@nodegui/nodegui");
+const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType } = require("@nodegui/nodegui");
 const bonjour = require('bonjour')()
+const resolve = require('path').resolve
 
 const KeyLight = require('./keylight')
 
@@ -33,8 +34,49 @@ function createHeaderWidget() {
   return headerWidget
 }
 
+function createTrayIcon() {
+  const icon = new QIcon(resolve(__dirname, 'bulb.png'))
+  const tray = new QSystemTrayIcon()
+  const menu = new QMenu()
 
-const main = async () => {
+  tray.setIcon(icon)
+
+  tray.addEventListener('activated', () => {
+    global.win.show()
+  })
+
+  tray.setContextMenu(menu)
+
+  const quitAction = new QAction()
+  quitAction.setText('Quit')
+
+  quitAction.addEventListener('triggered', () => {
+    process.exit(22)
+  })
+  
+  menu.addAction(quitAction)
+
+  const toggleAction = new QAction()
+  toggleAction.setText('Show/Hide')
+
+  toggleAction.addEventListener('triggered', () => {
+    if (global.win.isVisible()) {
+      global.win.hide();
+    } else {
+      global.win.show();
+    }
+  })
+
+  menu.addAction(toggleAction)
+
+  tray.show()
+  
+
+  global.tray = tray
+}
+
+
+function createMainWindow () {
   const win = new QMainWindow()
 
 
@@ -56,12 +98,21 @@ const main = async () => {
     view.layout.addWidget(keyLight.widget)
   })
 
+  win.setCentralWidget(view)
 
-
-  win.setCentralWidget(view);
-  win.show()
+  win.setWindowFlag(WindowType.WindowMinimizeButtonHint, false)
 
   global.win = win
 }
 
-main().catch(console.error)
+
+function main() {
+  global.app = QApplication.instance()
+  global.app.setQuitOnLastWindowClosed(false)
+
+  createTrayIcon()
+  createMainWindow()
+}
+
+
+main()
