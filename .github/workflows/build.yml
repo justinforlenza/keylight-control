@@ -11,14 +11,27 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  linux:
-    # The type of runner that the job will run on
+  create_release:
+    name: Create release
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+  
+  linux:
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
         
       - name: Setup GCC
@@ -38,24 +51,56 @@ jobs:
         
       - name: Build Binary
         run: npx nodegui-packer --pack dist
-      
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ needs.create_release.outputs.upload_url }} 
           asset_path: ./deploy/linux/build/KeylightController/Keylight_Controller-x86_64.AppImage
           asset_name: Keylight_Controller-x86_64.AppImage
+          asset_content_type: application/octet-stream
+
+  macos:
+    needs: create_release
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Setup GCC
+        uses: egor-tensin/setup-gcc@v1
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.5
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        
+      - name: Install Node Packages
+        run: yarn install
+      
+      - name: Import Code-Signing Certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with: 
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+
+      - name: Build Binary
+        run: npx nodegui-packer --pack ./dist
+
+      - name: Sign Binary
+        run: 'codesign --deep -fs "Developer ID Application: Justin Forlenza (GWPC475GJ5)" ./deploy/darwin/build/KeylightController.app -v'
+      
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }} 
+          asset_path: ./deploy/darwin/build/KeylightController.app
+          asset_name: KeylightController.app
           asset_content_type: application/octet-stream
