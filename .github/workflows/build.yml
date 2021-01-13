@@ -87,6 +87,12 @@ jobs:
 
       - name: Sign Binary
         run: 'codesign --deep -fs "Developer ID Application: Justin Forlenza (GWPC475GJ5)" ./deploy/darwin/build/KeylightController.app -v'
+
+      - name: Zip Application
+        uses: papeloto/action-zip@v1
+        with:
+          files: ./deploy/darwin/build/KeylightController.app
+          dest: ./deploy/darwin/build/KeylightController.app.zip
       
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -95,6 +101,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }} 
-          asset_path: ./deploy/darwin/build/KeylightController.app
-          asset_name: KeylightController.app
-          asset_content_type: application/octet-stream
+          asset_path: ./deploy/darwin/build/KeylightController.app.zip
+          asset_name: KeylightController.app.zip
+          asset_content_type: application/zip
