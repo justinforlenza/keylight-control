@@ -5,9 +5,10 @@
   "author": "Justin Forlenza",
   "license": "GPLv3",
   "scripts": {
-    "build:prod": "webpack --mode=production && nodegui-packer --pack dist/",
+    "build": "webpack --mode=production && nodegui-packer --pack dist/",
     "start": "webpack && qode dist/index.js",
-    "debug": "webpack && qode --inspect dist/index.js"
+    "debug": "webpack && qode --inspect dist/index.js",
+    "pack": "webpack"
   },
   "dependencies": {
     "@nodegui/nodegui": "^0.25.0",

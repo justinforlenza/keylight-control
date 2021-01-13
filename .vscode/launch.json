@@ -10,8 +10,9 @@
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/qode.exe"
       },
-      "args": ["./dist/index.js"],
+      "args": ["--inspect", "./dist/index.js"],
       "outputCapture": "std",
+      "preLaunchTask": "yarn: pack"
     }
   ]
 }
