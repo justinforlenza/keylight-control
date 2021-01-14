@@ -1,4 +1,4 @@
-const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason } = require("@nodegui/nodegui");
+const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason, QScrollArea } = require("@nodegui/nodegui");
 const bonjour = require('bonjour')()
 const resolve = require('path').resolve
 
@@ -93,25 +93,31 @@ function createMainWindow () {
 
   win.setWindowTitle('Keylight Control')
   win.setFixedSize(400, 200)
-  win.setInlineStyle(`background-color: #414141;`)
 
+  const scrollArea = new QScrollArea()
+  scrollArea.setInlineStyle('flex: 1;')
+  scrollArea.setInlineStyle(`background-color: #414141;`)
 
   const view = new QWidget();
   view.setLayout(new FlexLayout());
+  view.setInlineStyle('align-content: stretch; flex-direction: column; background-color: #414141;')
 
-  view.layout.addWidget(createHeaderWidget())
+  // view.layout.addWidget(createHeaderWidget())
 
   const lightFinder = bonjour.find({ type: 'elg' })
-
 
   lightFinder.on('up', light => {
     var keyLight = new KeyLight(light.referer.address, light.name)
     view.layout.addWidget(keyLight.widget)
   })
 
-  win.setCentralWidget(view)
+  scrollArea.setWidget(view)
+
+  win.setCentralWidget(scrollArea)
 
   win.setWindowFlag(WindowType.WindowMinimizeButtonHint, false)
+
+  win.show()
 
   global.win = win
 }

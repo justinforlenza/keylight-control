@@ -61,7 +61,7 @@ class KeyLight {
     `
     const slidersWidget = new QWidget()
     slidersWidget.setLayout(new FlexLayout())
-    slidersWidget.setInlineStyle('padding-left: 10px; flex-grow: 1')
+    slidersWidget.setInlineStyle('padding-left: 10px; flex-grow: 1; flex-direction: column')
 
     this._brightnessSlider = new QSlider()
     this._brightnessSlider.setRange(0, 100)
@@ -79,7 +79,7 @@ class KeyLight {
 
     this._brightnessSlider.setStyleSheet(`
       QSlider {
-        height: 30px
+        height: 30px;
       }
       QSlider::groove:horizontal {
         background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #222222, stop: 1 #ffffff );
@@ -117,7 +117,7 @@ class KeyLight {
 
     this._temperatureSlider.setStyleSheet(`
       QSlider {
-        height: 25px
+        height: 25px;
       }
       QSlider::groove:horizontal {
         background: qlineargradient(x1: 1, y1: 0, x2: 0, y2: 0, stop: 0 #ffb662, stop: 1 #c9e2ff );
