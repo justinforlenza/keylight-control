@@ -1,0 +1,97 @@
+name: Build
+
+on:
+  push:
+    tags: 
+      - 'v*'
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+  
+  linux:
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Build Packages
+        run: sudo apt-get install pkg-config build-essential mesa-common-dev libglu1-mesa-dev cmake libxkbcommon-dev libxkbcommon-x11-dev -y
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        
+      - name: Install Node Packages
+        run: yarn install
+
+      - name: Build Binary
+        run: yarn build
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }} 
+          asset_path: ./deploy/linux/build/KeylightController/Keylight_Controller-x86_64.AppImage
+          asset_name: Keylight_Controller-x86_64.AppImage
+          asset_content_type: application/octet-stream
+
+  macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        
+      - name: Install Node Packages
+        run: yarn install
+      
+      - name: Import Code-Signing Certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with: 
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+      
+      - name: Pack Sourcecode
+        run: yarn webpack
+
+      - name: Build Binary
+        run: yarn build
+
+      - name: Sign Binary
+        run: 'codesign --deep -fs "Developer ID Application: Justin Forlenza (GWPC475GJ5)" ./deploy/darwin/build/KeylightController.app -v'
+
+      - name: Zip Application
+        uses: papeloto/action-zip@v1
+        with:
+          files: ./deploy/darwin/build/KeylightController.app
+          dest: ./deploy/darwin/build/KeylightController.app.zip
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }} 
+          asset_path: ./deploy/darwin/build/KeylightController.app.zip
+          asset_name: KeylightController.app.zip
+          asset_content_type: application/zip
