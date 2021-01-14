@@ -12,7 +12,6 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   create_release:
-    if: ${{ !env.ACT }}
     name: Create release
     runs-on: ubuntu-latest
     outputs:
@@ -35,13 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Setup CMake
-      #   uses: jwlawson/actions-setup-cmake@v1.5
-
-      - name: Install Sudo (local test only)
-        if: ${{env.ACT}}
-        run: apt update && apt install sudo -y
-
       - name: Install Build Packages
         run: sudo apt-get install pkg-config build-essential mesa-common-dev libglu1-mesa-dev cmake -y
 
@@ -55,7 +47,6 @@ jobs:
         run: yarn build
 
       - name: Upload Release Asset
-        if: ${{ !env.ACT }}
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
