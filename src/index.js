@@ -38,7 +38,8 @@ function createTrayIcon() {
   `
   Create and Configure  System Tray Icon
   `
-  const icon = new QIcon(resolve(__dirname, 'bulb.png'))
+  const icon = new QIcon(resolve(__dirname, 'assets/bulb.png'))
+  icon.setIsMask(true)
   const tray = new QSystemTrayIcon()
   const menu = new QMenu()
 
