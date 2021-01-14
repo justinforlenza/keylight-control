@@ -49,11 +49,8 @@ jobs:
       - name: Install Node Packages
         run: yarn install
 
-      - name: Pack Sourcecode
-        run: yarn webpack
-        
       - name: Build Binary
-        run: npx nodegui-packer --pack dist
+        run: yarn build
 
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -89,7 +86,7 @@ jobs:
         run: yarn webpack
 
       - name: Build Binary
-        run: npx nodegui-packer --pack ./dist
+        run: yarn build
 
       - name: Sign Binary
         run: 'codesign --deep -fs "Developer ID Application: Justin Forlenza (GWPC475GJ5)" ./deploy/darwin/build/KeylightController.app -v'
