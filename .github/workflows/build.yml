@@ -48,6 +48,9 @@ jobs:
         
       - name: Install Node Packages
         run: yarn install
+
+      - name: Pack Sourcecode
+        run: yarn webpack
         
       - name: Build Binary
         run: npx nodegui-packer --pack dist
@@ -81,6 +84,9 @@ jobs:
         with: 
           p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
           p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+      
+      - name: Pack Sourcecode
+        run: yarn webpack
 
       - name: Build Binary
         run: npx nodegui-packer --pack ./dist
