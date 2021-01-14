@@ -6,12 +6,13 @@ name: Build
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    tags: 
-      - 'v*'
+    branches:
+      - main
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   create_release:
+    if: ${{ !env.ACT }}
     name: Create release
     runs-on: ubuntu-latest
     outputs:
@@ -33,15 +34,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        
-      - name: Setup GCC
-        uses: egor-tensin/setup-gcc@v1
 
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.5
+      # - name: Setup CMake
+      #   uses: jwlawson/actions-setup-cmake@v1.5
+
+      - name: Install Sudo (local test only)
+        if: ${{env.ACT}}
+        run: apt update && apt install sudo -y
 
       - name: Install Build Packages
-        run: sudo apt-get install pkg-config build-essential mesa-common-dev libglu1-mesa-dev
+        run: sudo apt-get install pkg-config build-essential mesa-common-dev libglu1-mesa-dev cmake -y
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.4
@@ -53,6 +55,7 @@ jobs:
         run: yarn build
 
       - name: Upload Release Asset
+        if: ${{ !env.ACT }}
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
