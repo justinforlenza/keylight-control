@@ -14,6 +14,7 @@
     "@nodegui/nodegui": "^0.25.0",
     "axios": "^0.21.1",
     "bonjour": "^3.5.0",
+    "chroma-js": "^2.1.0",
     "lodash": "^4.17.20"
   },
   "devDependencies": {

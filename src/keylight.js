@@ -4,20 +4,16 @@ const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout, Cursor
 
 const debounce = require('lodash/debounce')
 const axios = require('axios').default
-// const { colorTemperature2rgbUsingTH } = require('color-temperature')
-
+const chroma = require('chroma-js')
 
 const powerOnIcon = new QIcon(resolve(__dirname, 'assets/power_on.png'))
 const powerOffIcon = new QIcon(resolve(__dirname, 'assets/power_off.png'))
 
 
-function lightTemperatureConvert(value) {
-  // Function to convert light temperature in Kelvin to a value the keylight understands
-  return Math.round(987007 * value ** -0.999)
-}
+const brightnessScale = chroma.scale(['#000000', '#ffffff'])
 
 
-function toLightTemperature(value) {
+function toKelvin(value) {
   // Function to convert keylight to temperature in Kelvin
   return Math.round((1000000 * value ** -1))
 }
@@ -57,11 +53,10 @@ class KeyLight {
       ]
     }).then(() => {
       this.temperature = temperature !== null ? temperature : this.temperature
-    
+
       this.brightness = brightness !== null ? brightness : this.brightness
-      
+
       this.on = on !== null ? on : this.on
-      
       this._powerButton.setIcon(this.on ? powerOnIcon : powerOffIcon)
     })
   }
@@ -78,6 +73,10 @@ class KeyLight {
 
     this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000'))
 
+    this._brightnessSlider.addEventListener('valueChanged', v => {
+      this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000', brightnessScale(v/100)))
+    })
+
     this._brightnessSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(null, null, v), 50))
 
     return this._brightnessSlider
@@ -90,6 +89,10 @@ class KeyLight {
     this._temperatureSlider.setRange(143, 344)
     this._temperatureSlider.setOrientation(1)
     this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#F3F2FF'))
+
+    this._temperatureSlider.addEventListener('valueChanged', v => {
+      this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#F3F2FF', chroma.temperature(toKelvin(v)).hex()))
+    })
 
     this._temperatureSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(v, null, null), 50))
  

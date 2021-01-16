@@ -51,7 +51,7 @@ function createTrayIcon() {
 
   tray.addEventListener('activated', (activationReason) => {
     `
-    If tray icon is double clicked open the application
+    If tray icon is double clicked open the application-
     `
     if (process.platform === 'linux' || activationReason === QSystemTrayIconActivationReason.DoubleClick) {
       keyLights.forEach(keyLight => keyLight.getLightInfo())
