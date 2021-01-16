@@ -1,12 +1,57 @@
-const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason, QScrollArea, QGridLayout } = require("@nodegui/nodegui");
-const bonjour = require('bonjour')()
-const resolve = require('path').resolve
+const { resolve } = require('path')
 
-const version = require('../package.json').version
+const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason, QScrollArea, QPushButton, ButtonRole, QMessageBox } = require("@nodegui/nodegui");
+
+const bonjour = require('bonjour')()
+const axios = require('axios').default
+const open = require('open')
 
 const KeyLight = require('./keylight')
 
+
+const version = require('../package.json').version;
+
+const appIcon = new QIcon(resolve(__dirname, 'assets/app_icon.png'))
+
 var keyLights = []
+
+
+function checkVersion() {
+  axios.get('https://api.github.com/repos/justinforlenza/keylight-control/releases/latest').then(response => {
+    latestVersion = response.data.tag_name.replace('v', '').split('.')
+    currentVersion = version.split('.')
+
+    for(let [value, index] of currentVersion.entries())  {
+      if (value < latestVersion[index]) {
+        const messageBox = new QMessageBox()
+
+        messageBox.setWindowTitle('Software Update')
+
+        messageBox.setWindowIcon(appIcon)
+
+        messageBox.setText('A new version of Keylight Controller is avaliable!')
+        messageBox.setInformativeText(`Key Controller ${response.data.tag_name.replace('v', '')} is now avaliable—you have ${version.replace('v')}. Would you like to download it now?`)
+        
+
+        const downloadButton = new QPushButton()
+        downloadButton.setText('Download Now')
+        downloadButton.addEventListener('clicked', () => {
+          open('https://github.com/justinforlenza/keylight-control/releases/latest')
+        })
+
+        messageBox.addButton(downloadButton, ButtonRole.AcceptRole)
+
+        const cancelButton = new QPushButton()
+        cancelButton.setText('Remind me Later')
+        
+        messageBox.addButton(cancelButton, ButtonRole.RejectRole)
+
+        messageBox.exec()
+        break;
+      }
+    }
+  }).catch()
+}
 
 
 function createHeaderWidget() {
@@ -56,7 +101,7 @@ function createTrayIcon() {
     if (process.platform === 'linux' || activationReason === QSystemTrayIconActivationReason.DoubleClick) {
       keyLights.forEach(keyLight => keyLight.getLightInfo())
       if (global.win.isVisible()) {
-        global.win.activateWindow
+        global.win.activateWindow()
       } else {
         global.win.show()
       }
@@ -64,6 +109,31 @@ function createTrayIcon() {
   })
 
   tray.setContextMenu(menu)
+
+  const infoAction = new QAction()
+  infoAction.setText(`Keylight Controller v${version}`)
+
+  infoAction.setEnabled(false)
+  
+  menu.addAction(infoAction)
+
+  const seperator = new QAction()
+  seperator.setSeparator(true)
+
+  menu.addAction(seperator)
+
+  const toggleAction = new QAction()
+  toggleAction.setText('Show Window')
+
+  toggleAction.addEventListener('triggered', () => {
+    if (global.win.isVisible()) {
+      global.win.activateWindow()
+    } else {
+      global.win.show()
+    }
+  })
+
+  menu.addAction(toggleAction)
 
   const quitAction = new QAction()
   quitAction.setText('Quit')
@@ -74,19 +144,6 @@ function createTrayIcon() {
   
   menu.addAction(quitAction)
 
-  const toggleAction = new QAction()
-  toggleAction.setText('Show/Hide')
-
-  toggleAction.addEventListener('triggered', () => {
-    if (global.win.isVisible()) {
-      global.win.hide();
-    } else {
-      global.win.show();
-      keyLights.forEach(keyLight => keyLight.getLightInfo())
-    }
-  })
-
-  menu.addAction(toggleAction)
 
   tray.show()
   
@@ -125,6 +182,7 @@ function createMainWindow () {
   win.setCentralWidget(scrollArea)
 
   win.setWindowFlag(WindowType.WindowMinimizeButtonHint, false)
+  win.setWindowIcon(appIcon)
 
   // win.show()
 
@@ -135,6 +193,8 @@ function createMainWindow () {
 function main() {
   global.app = QApplication.instance()
   global.app.setQuitOnLastWindowClosed(false)
+
+  checkVersion()
 
   createTrayIcon()
   createMainWindow()

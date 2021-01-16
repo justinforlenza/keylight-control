@@ -1,4 +1,4 @@
-const resolve = require('path').resolve
+const { resolve } = require('path')
 
 const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout, CursorShape } = require("@nodegui/nodegui")
 
@@ -6,9 +6,9 @@ const debounce = require('lodash/debounce')
 const axios = require('axios').default
 const chroma = require('chroma-js')
 
+
 const powerOnIcon = new QIcon(resolve(__dirname, 'assets/power_on.png'))
 const powerOffIcon = new QIcon(resolve(__dirname, 'assets/power_off.png'))
-
 
 const brightnessScale = chroma.scale(['#000000', '#ffffff'])
 
