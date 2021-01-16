@@ -82,79 +82,9 @@ class KeyLight {
     this._temperatureSlider.addEventListener('valueChanged',_.throttle((v) => this.updateLight(v, null, null), 100))
 
 
-    this._brightnessSlider.setStyleSheet(`
-      QSlider {
-        height: 30px;
-      }
-      QSlider::groove:horizontal {
-        background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #222222, stop: 1 #ffffff );
-        height: 15px;
-        border: 1px solid #313131;
-        border-radius: 7px;
-      }
+    this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000'))
 
-      QSlider::sub-page:horizontal {
-        border: 0;
-        height: 18px;
-        border-radius: 7px;
-      }
-
-      QSlider::add-page:horizontal {
-        border: 0;
-        height: 20px;
-        width: 20px;
-        border-radius: 10px;
-      }
-
-      QSlider::handle:horizontal {
-        border: 2px solid white;
-        width: 18px;
-        margin-top: -2px;
-        margin-bottom: -2px;
-        border-radius: 9px;
-      }
-
-      QSlider::handle:horizontal:hover {
-          border-radius: 9px;
-      }
-    `)
-
-    this._temperatureSlider.setStyleSheet(`
-      QSlider {
-        height: 30px;
-      }
-      QSlider::groove:horizontal {
-        background: qlineargradient(x1: 1, y1: 0, x2: 0, y2: 0, stop: 0 #ffb662, stop: 1 #c9e2ff );
-        height: 15px;
-        border: 1px solid #313131;
-        border-radius: 7px;
-      }
-
-      QSlider::sub-page:horizontal {
-        border: 0;
-        height: 18px;
-        border-radius: 7px;
-      }
-
-      QSlider::add-page:horizontal {
-        border: 0;
-        height: 20px;
-        width: 20px;
-        border-radius: 10px;
-      }
-
-      QSlider::handle:horizontal {
-        border: 2px solid white;
-        width: 18px;
-        margin-top: -2px;
-        margin-bottom: -2px;
-        border-radius: 9px;
-      }
-
-      QSlider::handle:horizontal:hover {
-          border-radius: 9px;
-      }
-    `)
+    this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#c9e2ff'))
 
     slidersWidget.layout.addWidget(this._brightnessSlider)
     slidersWidget.layout.addWidget(this._temperatureSlider)
@@ -233,7 +163,42 @@ class KeyLight {
   }
 
   _sliderStyle(color1, color2) {
-    return 
+    return `
+    QSlider {
+      height: 30px;
+    }
+    QSlider::groove:horizontal {
+      background: qlineargradient(x1: 1, y1: 0, x2: 0, y2: 0, stop: 0 ${color1}, stop: 1 ${color2} );
+      height: 15px;
+      border: 1px solid #313131;
+      border-radius: 7px;
+    }
+
+    QSlider::sub-page:horizontal {
+      border: 0;
+      height: 18px;
+      border-radius: 7px;
+    }
+
+    QSlider::add-page:horizontal {
+      border: 0;
+      height: 20px;
+      width: 20px;
+      border-radius: 10px;
+    }
+
+    QSlider::handle:horizontal {
+      border: 2px solid white;
+      width: 18px;
+      margin-top: -2px;
+      margin-bottom: -2px;
+      border-radius: 9px;
+    }
+
+    QSlider::handle:horizontal:hover {
+        border-radius: 9px;
+    }
+  `
   }
 
 }
