@@ -1,4 +1,4 @@
-const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout } = require("@nodegui/nodegui")
+const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout, CursorShape } = require("@nodegui/nodegui")
 
 const debounce = require('lodash/debounce')
 const axios = require('axios').default
@@ -103,10 +103,11 @@ class KeyLight {
     this._powerButton.addEventListener('clicked', debounce(() => this.updateLight(null, !this.on, null), 50))
 
     this._powerButton.setIconSize(new QSize(30, 30))
+    this._powerButton.setCursor(CursorShape.PointingHandCursor)
 
     this._powerButton.setStyleSheet(`
       QPushButton {
-        background-color:#313131;
+        background-color:rgba(0,0,0,0);
         color: white;
         border-radius: 18px;
         border-width: 3px;
@@ -145,7 +146,7 @@ class KeyLight {
     mainWidget.setInlineStyle(`
       padding: 10px;
       border-bottom: 1px solid #525252;
-      background-color: rgba(49,49,49,90%);
+      background-color: rgba(49,49,49,0.90);
       opacity: 0.5;
       flex-direction: column;
       height: 100px;
