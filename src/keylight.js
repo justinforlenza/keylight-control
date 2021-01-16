@@ -1,21 +1,24 @@
+const resolve = require('path').resolve
+
 const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout, CursorShape } = require("@nodegui/nodegui")
 
 const debounce = require('lodash/debounce')
 const axios = require('axios').default
-const resolve = require('path').resolve
+// const { colorTemperature2rgbUsingTH } = require('color-temperature')
+
 
 const powerOnIcon = new QIcon(resolve(__dirname, 'assets/power_on.png'))
 const powerOffIcon = new QIcon(resolve(__dirname, 'assets/power_off.png'))
 
 
 function lightTemperatureConvert(value) {
-  // Function to convert light temperature in Kelvin to the value the keylight understands
+  // Function to convert light temperature in Kelvin to a value the keylight understands
   return Math.round(987007 * value ** -0.999)
 }
 
 
 function toLightTemperature(value) {
-  // Function to convert keylight temperature value to the nearest 50th Kelvin value.
+  // Function to convert keylight to temperature in Kelvin
   return Math.round((1000000 * value ** -1))
 }
 
@@ -37,7 +40,7 @@ class KeyLight {
       this._powerButton.setIcon(this.on ? powerOnIcon : powerOffIcon)
       this.brightness = response.data.lights[0].brightness
       this._brightnessSlider.setSliderPosition(this.brightness)
-      this.temperature = toLightTemperature(response.data.lights[0].temperature)
+      this.temperature = response.data.lights[0].temperature
       this._temperatureSlider.setSliderPosition(this.temperature)
     })
   }
@@ -49,13 +52,16 @@ class KeyLight {
         {
           on: on !== null ? on : this.on,
           brightness: brightness !== null ? brightness : this.brightness,
-          temperature: temperature !== null ? lightTemperatureConvert(temperature) : this.temperature
+          temperature: temperature !== null ? temperature : this.temperature
         }
       ]
     }).then(() => {
-      this.temperature = temperature !== null ? lightTemperatureConvert(temperature) : this.temperature
+      this.temperature = temperature !== null ? temperature : this.temperature
+    
       this.brightness = brightness !== null ? brightness : this.brightness
+      
       this.on = on !== null ? on : this.on
+      
       this._powerButton.setIcon(this.on ? powerOnIcon : powerOffIcon)
     })
   }
@@ -81,11 +87,9 @@ class KeyLight {
 
     this._temperatureSlider = new QSlider()
 
-    this._temperatureSlider.setRange(2900, 7000)
+    this._temperatureSlider.setRange(143, 344)
     this._temperatureSlider.setOrientation(1)
-    this._temperatureSlider.setInvertedAppearance(true)
-
-    this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#c9e2ff'))
+    this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#F3F2FF'))
 
     this._temperatureSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(v, null, null), 50))
  
@@ -109,8 +113,8 @@ class KeyLight {
       QPushButton {
         background-color:rgba(0,0,0,0);
         color: white;
-        border-radius: 18px;
-        border-width: 3px;
+        border-radius: 16px;
+        border-width: 2px;
         border-color: white;
         border-style: solid;
       }
@@ -156,7 +160,7 @@ class KeyLight {
 
   }
 
-  _sliderStyle(color1, color2, handleColor) {
+  _sliderStyle(color1, color2, handleColor=null) {
     return `
     QSlider {
       height: 75px
@@ -173,7 +177,7 @@ class KeyLight {
       width: 17px;
       margin: -4px 0;
       border-radius: 10px;
-      background-color: white;
+      background-color: ${handleColor};
     }
   `
   }
