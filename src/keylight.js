@@ -26,9 +26,11 @@ class KeyLight {
     this.ip = ip
     this.name = name
     this.slug = this.name.replace(/ /g, '-')
-
     this._createMainWidget()
+    this.getLightInfo()
+  }
 
+  getLightInfo() {
     axios.get(`http://${this.ip}:9123/elgato/lights`).then(response => {
       this.on = response.data.lights[0].on
       this._powerButton.setChecked(this.on)
@@ -37,10 +39,8 @@ class KeyLight {
       this._brightnessSlider.setSliderPosition(this.brightness)
       this.temperature = toLightTemperature(response.data.lights[0].temperature)
       this._temperatureSlider.setSliderPosition(this.temperature)
-          })
-  
+    })
   }
-
 
   updateLight(temperature, on, brightness) {
     axios.put(`http://${this.ip}:9123/elgato/lights`, {
@@ -121,11 +121,12 @@ class KeyLight {
 
     this._temperatureSlider.setStyleSheet(`
       QSlider {
-        height: 25px;
+        height: 30px;
       }
       QSlider::groove:horizontal {
         background: qlineargradient(x1: 1, y1: 0, x2: 0, y2: 0, stop: 0 #ffb662, stop: 1 #c9e2ff );
         height: 15px;
+        border: 1px solid #313131;
         border-radius: 7px;
       }
 
@@ -137,8 +138,9 @@ class KeyLight {
 
       QSlider::add-page:horizontal {
         border: 0;
-        height: 18px;
-        border-radius: 7px;
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
       }
 
       QSlider::handle:horizontal {
@@ -228,6 +230,10 @@ class KeyLight {
 
     this.widget = mainWidget
 
+  }
+
+  _sliderStyle(color1, color2) {
+    return 
   }
 
 }

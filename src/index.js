@@ -4,6 +4,8 @@ const resolve = require('path').resolve
 
 const KeyLight = require('./keylight')
 
+var keyLights = []
+
 
 function createHeaderWidget() {
   const headerWidget = new QWidget()
@@ -51,8 +53,10 @@ function createTrayIcon() {
     `
     if (process.platform === 'linux') {
       global.win.show()
+      keyLights.forEach(keyLight => keyLight.getLightInfo())
     } else if (activationReason === QSystemTrayIconActivationReason.DoubleClick) {
       global.win.show()
+      keyLights.forEach(keyLight => keyLight.getLightInfo())
     }
   })
 
@@ -75,6 +79,7 @@ function createTrayIcon() {
       global.win.hide();
     } else {
       global.win.show();
+      keyLights.forEach(keyLight => keyLight.getLightInfo())
     }
   })
 
@@ -82,7 +87,6 @@ function createTrayIcon() {
 
   tray.show()
   
-
   global.tray = tray
 }
 
@@ -109,6 +113,7 @@ function createMainWindow () {
   lightFinder.on('up', light => {
     var keyLight = new KeyLight(light.referer.address, light.name)
     view.layout.addWidget(keyLight.widget)
+    keyLights.push(keyLight)
   })
 
   scrollArea.setWidget(view)
@@ -117,7 +122,7 @@ function createMainWindow () {
 
   win.setWindowFlag(WindowType.WindowMinimizeButtonHint, false)
 
-  win.show()
+  // win.show()
 
   global.win = win
 }
