@@ -1,4 +1,4 @@
-const { QWidget, QLabel, FlexLayout, QPushButton, QSlider, QIcon, QSize } = require("@nodegui/nodegui")
+const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout } = require("@nodegui/nodegui")
 
 const _ = require('lodash')
 const axios = require('axios').default
@@ -60,46 +60,42 @@ class KeyLight {
     })
   }
 
-  _createSlidersWidget() {
+  _createBrightnessSlider() {
     `
-    Method to create Temperature and Brightness Sliders Widgets
+    Method to create Brightness Slider
     `
-    const slidersWidget = new QWidget()
-    slidersWidget.setLayout(new FlexLayout())
-    slidersWidget.setInlineStyle('padding-left: 10px; flex-grow: 1; flex-direction: column')
 
     this._brightnessSlider = new QSlider()
+
     this._brightnessSlider.setRange(0, 100)
     this._brightnessSlider.setOrientation(1)
 
+    this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000'))
+
     this._brightnessSlider.addEventListener('valueChanged',_.throttle((v) => this.updateLight(null, null, v), 100))
 
+    return this._brightnessSlider
+  }
+  
+  _createTemperatureSlider() {
+
     this._temperatureSlider = new QSlider()
+
     this._temperatureSlider.setRange(2900, 7000)
     this._temperatureSlider.setOrientation(1)
     this._temperatureSlider.setInvertedAppearance(true)
 
-    this._temperatureSlider.addEventListener('valueChanged',_.throttle((v) => this.updateLight(v, null, null), 100))
-
-
-    this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000'))
-
     this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#c9e2ff'))
 
-    slidersWidget.layout.addWidget(this._brightnessSlider)
-    slidersWidget.layout.addWidget(this._temperatureSlider)
-
-    return slidersWidget
+    this._temperatureSlider.addEventListener('valueChanged',_.throttle((v) => this.updateLight(v, null, null), 100))
+ 
+    return this._temperatureSlider
   }
 
-  _createControlsWidget() {
+  _createPowerButton() {
     `
     Method to create Control Widgets
     `
-
-    const controlsWidget = new QWidget()
-    controlsWidget.setLayout(new FlexLayout())
-    controlsWidget.setInlineStyle('flex-direction: row;')
 
     this._powerButton = new QPushButton()
     this._powerButton.setCheckable(true)
@@ -123,10 +119,7 @@ class KeyLight {
       }
     `)
 
-    controlsWidget.layout.addWidget(this._powerButton)
-    controlsWidget.layout.addWidget(this._createSlidersWidget())
-
-    return controlsWidget
+    return this._powerButton
 
   }
 
@@ -137,25 +130,25 @@ class KeyLight {
     const mainWidget = new QWidget()
 
     mainWidget.setObjectName(this.slug)
-    mainWidget.setLayout(new FlexLayout())
+    mainWidget.setLayout(new QGridLayout())
 
     const nameLabel = new QLabel()
     nameLabel.setText(this.name)
-    nameLabel.setInlineStyle('color: white')
+    nameLabel.setInlineStyle('color: white;')
 
-    mainWidget.layout.addWidget(nameLabel)
+    mainWidget.layout.addWidget(nameLabel, 0, 0, 1, 8)
 
-    mainWidget.layout.addWidget(this._createControlsWidget())
+    mainWidget.layout.addWidget(this._createPowerButton(), 1, 0, 2, 1)
+    mainWidget.layout.addWidget(this._createBrightnessSlider(), 1, 1, 1, 7)
+    mainWidget.layout.addWidget(this._createTemperatureSlider(), 2, 1, 1, 7)
 
-    mainWidget.setStyleSheet(`
-      #${this.slug} {
-        flex-direction: 'column';
-        padding: 10px;
-        border-bottom: 1px solid #525252;
-        background-color: #313131;
-        width: 398px;
-      }
-      
+    mainWidget.setInlineStyle(`
+      padding: 10px;
+      border-bottom: 1px solid #525252;
+      background-color: rgba(49,49,49,90%);
+      opacity: 0.5;
+      flex-direction: column;
+      height: 100px;
     `)
 
     this.widget = mainWidget

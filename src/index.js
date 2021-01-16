@@ -1,6 +1,8 @@
-const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason, QScrollArea } = require("@nodegui/nodegui");
+const { QMainWindow, QWidget, QApplication, FlexLayout, QIcon, QSystemTrayIcon, QMenu, QAction, WindowType, QSystemTrayIconActivationReason, QScrollArea, QGridLayout } = require("@nodegui/nodegui");
 const bonjour = require('bonjour')()
 const resolve = require('path').resolve
+
+const version = require('../package.json').version
 
 const KeyLight = require('./keylight')
 
@@ -97,14 +99,15 @@ function createMainWindow () {
 
   win.setWindowTitle('Keylight Control')
   win.setFixedSize(400, 200)
+  win.setInlineStyle(`background-image: url(${resolve(__dirname, 'assets/bg.png')});`)
 
   const scrollArea = new QScrollArea()
   scrollArea.setInlineStyle('flex: 1;')
-  scrollArea.setInlineStyle('background-color: #414141;')
+  scrollArea.setInlineStyle('background-color: rgba(0,0,0,0);')
 
   const view = new QWidget();
   view.setLayout(new FlexLayout());
-  view.setInlineStyle(`align-content: stretch; flex-direction: column; background-color: #414141; background-image: url(${resolve(__dirname, 'assets/bg.png')});`)
+  view.setInlineStyle(`align-content: stretch; flex-direction: column; background-color: rgba(0,0,0,0);`)
 
   // view.layout.addWidget(createHeaderWidget())
 
