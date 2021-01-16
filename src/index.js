@@ -53,12 +53,13 @@ function createTrayIcon() {
     `
     If tray icon is double clicked open the application
     `
-    if (process.platform === 'linux') {
-      global.win.show()
+    if (process.platform === 'linux' || activationReason === QSystemTrayIconActivationReason.DoubleClick) {
       keyLights.forEach(keyLight => keyLight.getLightInfo())
-    } else if (activationReason === QSystemTrayIconActivationReason.DoubleClick) {
-      global.win.show()
-      keyLights.forEach(keyLight => keyLight.getLightInfo())
+      if (global.win.isVisible()) {
+        global.win.activateWindow
+      } else {
+        global.win.show()
+      }
     }
   })
 
