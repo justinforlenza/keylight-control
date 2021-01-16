@@ -1,6 +1,6 @@
 const { QWidget, QLabel, QPushButton, QSlider, QIcon, QSize, QGridLayout } = require("@nodegui/nodegui")
 
-const _ = require('lodash')
+const debounce = require('lodash/debounce')
 const axios = require('axios').default
 const resolve = require('path').resolve
 
@@ -72,7 +72,7 @@ class KeyLight {
 
     this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000'))
 
-    this._brightnessSlider.addEventListener('valueChanged',_.throttle((v) => this.updateLight(null, null, v), 100))
+    this._brightnessSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(null, null, v), 50))
 
     return this._brightnessSlider
   }
@@ -87,7 +87,7 @@ class KeyLight {
 
     this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#c9e2ff'))
 
-    this._temperatureSlider.addEventListener('valueChanged',_.throttle((v) => this.updateLight(v, null, null), 100))
+    this._temperatureSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(v, null, null), 50))
  
     return this._temperatureSlider
   }
@@ -100,7 +100,7 @@ class KeyLight {
     this._powerButton = new QPushButton()
     this._powerButton.setCheckable(true)
     this._powerButton.setIcon(powerOffIcon)
-    this._powerButton.addEventListener('clicked', _.throttle(() => this.updateLight(null, !this.on, null), 100))
+    this._powerButton.addEventListener('clicked', debounce(() => this.updateLight(null, !this.on, null), 50))
 
     this._powerButton.setIconSize(new QSize(30, 30))
 
