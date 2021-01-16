@@ -26,6 +26,7 @@ jobs:
   linux:
     needs: create_release
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v2
 
@@ -54,6 +55,7 @@ jobs:
 
   macos:
     runs-on: macos-latest
+    needs: create_release
 
     steps:
       - uses: actions/checkout@v2
