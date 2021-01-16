@@ -100,11 +100,11 @@ function createMainWindow () {
 
   const scrollArea = new QScrollArea()
   scrollArea.setInlineStyle('flex: 1;')
-  scrollArea.setInlineStyle(`background-color: #414141;`)
+  scrollArea.setInlineStyle('background-color: #414141;')
 
   const view = new QWidget();
   view.setLayout(new FlexLayout());
-  view.setInlineStyle('align-content: stretch; flex-direction: column; background-color: #414141;')
+  view.setInlineStyle(`align-content: stretch; flex-direction: column; background-color: #414141; background-image: url(${resolve(__dirname, 'assets/bg.png')});`)
 
   // view.layout.addWidget(createHeaderWidget())
 
