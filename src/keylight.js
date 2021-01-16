@@ -156,41 +156,24 @@ class KeyLight {
 
   }
 
-  _sliderStyle(color1, color2) {
+  _sliderStyle(color1, color2, handleColor) {
     return `
     QSlider {
-      height: 30px;
+      height: 75px
     }
     QSlider::groove:horizontal {
       background: qlineargradient(x1: 1, y1: 0, x2: 0, y2: 0, stop: 0 ${color1}, stop: 1 ${color2} );
-      height: 15px;
+      height: 12px;
       border: 1px solid #313131;
       border-radius: 7px;
     }
 
-    QSlider::sub-page:horizontal {
-      border: 0;
-      height: 18px;
-      border-radius: 7px;
-    }
-
-    QSlider::add-page:horizontal {
-      border: 0;
-      height: 20px;
-      width: 20px;
-      border-radius: 10px;
-    }
-
     QSlider::handle:horizontal {
       border: 2px solid white;
-      width: 18px;
-      margin-top: -2px;
-      margin-bottom: -2px;
-      border-radius: 9px;
-    }
-
-    QSlider::handle:horizontal:hover {
-        border-radius: 9px;
+      width: 17px;
+      margin: -4px 0;
+      border-radius: 10px;
+      background-color: white;
     }
   `
   }
