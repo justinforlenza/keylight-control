@@ -1,17 +1,21 @@
+const { QWidget, QLabel, FlexLayout, QPushButton, QSlider, QIcon, QSize } = require("@nodegui/nodegui")
+
+const _ = require('lodash')
 const axios = require('axios').default
-const { QWidget, QLabel, FlexLayout, QPushButton, QSlider } = require("@nodegui/nodegui");
-const _ = require('lodash');
+const resolve = require('path').resolve
+
+const powerOnIcon = new QIcon(resolve(__dirname, 'assets/power_on.png'))
+const powerOffIcon = new QIcon(resolve(__dirname, 'assets/power_off.png'))
+
 
 function lightTemperatureConvert(value) {
   // Function to convert light temperature in Kelvin to the value the keylight understands
-
   return Math.round(987007 * value ** -0.999)
 }
 
 
 function toLightTemperature(value) {
   // Function to convert keylight temperature value to the nearest 50th Kelvin value.
-
   return Math.round((1000000 * value ** -1))
 }
 
@@ -27,11 +31,13 @@ class KeyLight {
 
     axios.get(`http://${this.ip}:9123/elgato/lights`).then(response => {
       this.on = response.data.lights[0].on
+      this._powerButton.setChecked(this.on)
+      this._powerButton.setIcon(this.on ? powerOnIcon : powerOffIcon)
       this.brightness = response.data.lights[0].brightness
       this._brightnessSlider.setSliderPosition(this.brightness)
       this.temperature = toLightTemperature(response.data.lights[0].temperature)
       this._temperatureSlider.setSliderPosition(this.temperature)
-    })
+          })
   
   }
 
@@ -50,8 +56,7 @@ class KeyLight {
       this.temperature = temperature !== null ? lightTemperatureConvert(temperature) : this.temperature
       this.brightness = brightness !== null ? brightness : this.brightness
       this.on = on !== null ? on : this.on
-    }).catch(err => {
-      console.log('throttle')
+      this._powerButton.setIcon(this.on ? powerOnIcon : powerOffIcon)
     })
   }
 
@@ -114,7 +119,6 @@ class KeyLight {
       }
     `)
 
-
     this._temperatureSlider.setStyleSheet(`
       QSlider {
         height: 25px;
@@ -165,11 +169,29 @@ class KeyLight {
     controlsWidget.setLayout(new FlexLayout())
     controlsWidget.setInlineStyle('flex-direction: row;')
 
-    const powerButton = new QPushButton()
-    powerButton.setText('On/Off')
-    powerButton.addEventListener('clicked', _.throttle(() => this.updateLight(null, !this.on, null), 100))
+    this._powerButton = new QPushButton()
+    this._powerButton.setCheckable(true)
+    this._powerButton.setIcon(powerOffIcon)
+    this._powerButton.addEventListener('clicked', _.throttle(() => this.updateLight(null, !this.on, null), 100))
 
-    controlsWidget.layout.addWidget(powerButton)
+    this._powerButton.setIconSize(new QSize(30, 30))
+
+    this._powerButton.setStyleSheet(`
+      QPushButton {
+        background-color:#313131;
+        color: white;
+        border-radius: 18px;
+        border-width: 3px;
+        border-color: white;
+        border-style: solid;
+      }
+      QPushButton:checked {
+        background-color:#fff;
+        color: #313131;
+      }
+    `)
+
+    controlsWidget.layout.addWidget(this._powerButton)
     controlsWidget.layout.addWidget(this._createSlidersWidget())
 
     return controlsWidget
@@ -199,6 +221,7 @@ class KeyLight {
         padding: 10px;
         border-bottom: 1px solid #525252;
         background-color: #313131;
+        width: 398px;
       }
       
     `)
