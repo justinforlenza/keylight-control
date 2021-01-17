@@ -3,7 +3,7 @@
   "version": "0.1.6",
   "main": "dist/index.js",
   "author": "Justin Forlenza",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "build": "webpack --mode=production && nodegui-packer --pack dist/",
     "start": "webpack && qode dist/index.js",
