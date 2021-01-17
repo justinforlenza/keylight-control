@@ -14,8 +14,8 @@ const brightnessScale = chroma.scale(['#000000', '#ffffff'])
 
 
 function toKelvin(value) {
-  // Function to convert keylight to temperature in Kelvin
-  return Math.round((1000000 * value ** -1))
+  // Rough equation to get Kelvin value from elgato keylight value for temperature
+  return Math.round(((-4100*value) / 201) + 1993300/201)
 }
 
 
@@ -75,6 +75,7 @@ class KeyLight {
 
     this._brightnessSlider.addEventListener('valueChanged', v => {
       this._brightnessSlider.setStyleSheet(this._sliderStyle('#ffffff', '#000000', brightnessScale(v/100)))
+      this._brightnessLabel.setText(`${v}%`)
     })
 
     this._brightnessSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(null, null, v), 50))
@@ -92,6 +93,7 @@ class KeyLight {
 
     this._temperatureSlider.addEventListener('valueChanged', v => {
       this._temperatureSlider.setStyleSheet(this._sliderStyle('#ffb662', '#F3F2FF', chroma.temperature(toKelvin(v)).hex()))
+      this._temperatureLabel.setText(`${toKelvin(v)}K`)
     })
 
     this._temperatureSlider.addEventListener('valueChanged', debounce((v) => this.updateLight(v, null, null), 50))
@@ -147,8 +149,18 @@ class KeyLight {
     mainWidget.layout.addWidget(nameLabel, 0, 0, 1, 8)
 
     mainWidget.layout.addWidget(this._createPowerButton(), 1, 0, 2, 1)
-    mainWidget.layout.addWidget(this._createBrightnessSlider(), 1, 1, 1, 7)
-    mainWidget.layout.addWidget(this._createTemperatureSlider(), 2, 1, 1, 7)
+
+    mainWidget.layout.addWidget(this._createBrightnessSlider(), 1, 1, 1, 6)
+
+    this._brightnessLabel = new QLabel()
+    this._brightnessLabel.setInlineStyle('color: white;')
+    mainWidget.layout.addWidget(this._brightnessLabel, 1, 7)
+
+    mainWidget.layout.addWidget(this._createTemperatureSlider(), 2, 1, 1, 6)
+
+    this._temperatureLabel = new QLabel()
+    this._temperatureLabel.setInlineStyle('color: white;')
+    mainWidget.layout.addWidget(this._temperatureLabel, 2, 7)
 
     mainWidget.setInlineStyle(`
       padding: 10px;
@@ -156,7 +168,7 @@ class KeyLight {
       background-color: rgba(49,49,49,0.90);
       opacity: 0.5;
       flex-direction: column;
-      height: 100px;
+      height: 90px;
     `)
 
     this.widget = mainWidget
