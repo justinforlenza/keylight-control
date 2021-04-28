@@ -1,6 +1,6 @@
 {
   "name": "keylight-control",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "dist/index.js",
   "author": "Justin Forlenza",
   "license": "GPL-3.0-or-later",
