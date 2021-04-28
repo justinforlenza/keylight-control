@@ -54,34 +54,34 @@ function checkVersion() {
 }
 
 
-function createHeaderWidget() {
-  const headerWidget = new QWidget()
+// function createHeaderWidget() {
+//   const headerWidget = new QWidget()
 
-  headerWidget.setObjectName('headerWidget')
-  headerWidget.setLayout(new FlexLayout())
+//   headerWidget.setObjectName('headerWidget')
+//   headerWidget.setLayout(new FlexLayout())
 
-  // const headerTitle = new QLabel()
-  // headerTitle.setObjectName('headerTitle')
-  // headerTitle.setText('Keylight Control')
-  // headerWidget.layout.addWidget(headerTitle)
+//   // const headerTitle = new QLabel()
+//   // headerTitle.setObjectName('headerTitle')
+//   // headerTitle.setText('Keylight Control')
+//   // headerWidget.layout.addWidget(headerTitle)
 
-  headerWidget.setStyleSheet(`
-    #headerTitle {
-      font-size: 14px;
-      color: white;
-    }
+//   headerWidget.setStyleSheet(`
+//     #headerTitle {
+//       font-size: 14px;
+//       color: white;
+//     }
 
-    #headerWidget {
-      flex-direction: 'row';
-      padding: 10px;
-      align-items: 'center';
-      justify-content: 'space-around';
-      background-color: #525252;
-    }
-  `)
+//     #headerWidget {
+//       flex-direction: 'row';
+//       padding: 10px;
+//       align-items: 'center';
+//       justify-content: 'space-around';
+//       background-color: #525252;
+//     }
+//   `)
 
-  return headerWidget
-}
+//   return headerWidget
+// }
 
 function createTrayIcon() {
   `
