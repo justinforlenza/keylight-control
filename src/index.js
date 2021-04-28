@@ -18,8 +18,8 @@ var keyLights = []
 
 function checkVersion() {
   axios.get('https://api.github.com/repos/justinforlenza/keylight-control/releases/latest').then(response => {
-    latestVersion = response.data.tag_name.replace('v', '').split('.')
-    currentVersion = version.split('.')
+    const latestVersion = response.data.tag_name.replace('v', '').split('.')
+    const currentVersion = version.split('.')
 
     for(let [value, index] of currentVersion.entries())  {
       if (value < latestVersion[index]) {
