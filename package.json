@@ -15,7 +15,7 @@
     "axios": "^0.21.1",
     "bonjour": "^3.5.0",
     "chroma-js": "^2.1.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "open": "^7.3.1"
   },
   "devDependencies": {
