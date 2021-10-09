@@ -1,6 +1,6 @@
 {
   "name": "keylight-control",
-  "version": "0.1.6",
+  "version": "0.1.17",
   "main": "dist/index.js",
   "author": "Justin Forlenza",
   "license": "GPL-3.0-or-later",
@@ -11,7 +11,7 @@
     "webpack": "webpack"
   },
   "dependencies": {
-    "@nodegui/nodegui": "^0.25.0",
+    "@nodegui/nodegui": "^0.40.0",
     "axios": "^0.21.1",
     "bonjour": "^3.5.0",
     "chroma-js": "^2.1.0",
